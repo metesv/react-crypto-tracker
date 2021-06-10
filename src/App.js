@@ -7,6 +7,7 @@ import "./App.css";
 
 function App() {
   const [coinArray, setCoinArray] = useState([]);
+  const [filteredCoinArray, setFilteredCoinArray] = useState([]);
   const [inputVal, setInputVal] = useState("");
 
   useEffect(() => {
@@ -16,14 +17,25 @@ function App() {
       )
       .then(res => {
         setCoinArray(res.data);
+        setFilteredCoinArray(res.data);
       });
   }, []);
 
-  console.log(coinArray);
+  useEffect(() => {
+    if (inputVal) {
+      const newArr = coinArray.filter(coin =>
+        coin.name.toLowerCase().includes(inputVal)
+      );
+      setFilteredCoinArray(newArr);
+    } else {
+      setFilteredCoinArray(coinArray);
+    }
+  }, [inputVal]);
 
   function handleInput(e) {
     setInputVal(e.target.value);
   }
+  console.log(filteredCoinArray);
 
   return (
     <div className="App">
@@ -34,10 +46,9 @@ function App() {
         value={inputVal}
         onChange={handleInput}
       />
-      {coinArray.length > 0 &&
-        coinArray.map(({ id, name, current_price, image }) => (
-          <CoinCard key={id} name={name} price={current_price} image={image} />
-        ))}
+      {filteredCoinArray.map(({ id, name, current_price, image }) => (
+        <CoinCard key={id} name={name} price={current_price} image={image} />
+      ))}
     </div>
   );
 }
