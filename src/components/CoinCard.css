@@ -1,0 +1,13 @@
+h3 {
+  border-bottom: 1px solid black;
+  padding-bottom: 15px;
+}
+
+img {
+  width: 25px;
+}
+
+span {
+  font-size: 1.2em;
+  padding-left: 15px;
+}
