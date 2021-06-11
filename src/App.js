@@ -10,16 +10,7 @@ function App() {
   const [filteredCoinArray, setFilteredCoinArray] = useState([]);
   const [inputVal, setInputVal] = useState("");
 
-  useEffect(() => {
-    axios
-      .get(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false%22"
-      )
-      .then(res => {
-        setCoinArray(res.data);
-        setFilteredCoinArray(res.data);
-      });
-  }, []);
+  useEffect(getCoins, []);
 
   useEffect(() => {
     if (inputVal) {
@@ -32,10 +23,16 @@ function App() {
     }
   }, [inputVal]);
 
-  function handleInput(e) {
-    setInputVal(e.target.value);
+  function getCoins() {
+    axios
+      .get(
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false%22"
+      )
+      .then(res => {
+        setCoinArray(res.data);
+        setFilteredCoinArray(res.data);
+      });
   }
-  console.log(filteredCoinArray);
 
   return (
     <div className="App">
@@ -44,11 +41,19 @@ function App() {
         type="text"
         placeholder="Search Coin"
         value={inputVal}
-        onChange={handleInput}
+        onChange={e => setInputVal(e.target.value)}
       />
-      {filteredCoinArray.map(({ id, name, current_price, image }) => (
-        <CoinCard key={id} name={name} price={current_price} image={image} />
-      ))}
+      {filteredCoinArray.map(
+        ({ id, name, current_price, image, price_change_percentage_24h }) => (
+          <CoinCard
+            key={id}
+            name={name}
+            price={current_price}
+            image={image}
+            change={price_change_percentage_24h}
+          />
+        )
+      )}
     </div>
   );
 }
